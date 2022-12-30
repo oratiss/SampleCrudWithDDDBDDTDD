@@ -1,6 +1,6 @@
 ﻿using AcceptanceTestsWithBDD.Abstractions;
 using AcceptanceTestsWithBDD.TestBuilders.Customers;
-using Api.Dtos;
+using NearToEndpointDtos.Customers;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -12,7 +12,7 @@ namespace AcceptanceTestsWithBDD.StepDefinitions
         private HttpClient? _client;
         private readonly ScenarioContext _scenarioContext;
         private readonly AddCustomerDtoTestBuilder _addCustomerDtoTestBuilder = new AddCustomerDtoTestBuilder();
-        private CustomerDto _customerDto;
+        private CustomerDto? _customerDto;
 
 
         public CustomerStepDefinitions(ScenarioContext scenarioContext)
@@ -43,8 +43,8 @@ namespace AcceptanceTestsWithBDD.StepDefinitions
         [Given(@"\[DateOfBirth is '([^']*)']")]
         public void GivenDateOfBirthIs(string p0)
         {
-            var dateOfBirth = DateTime.Parse(p0);
-            var dateOfBirthOffset = new DateTimeOffset(dateOfBirth, new TimeSpan(0, 3, 30, 0));
+            DateTime dateOfBirth = DateTime.Parse(p0);
+            DateTimeOffset dateOfBirthOffset = new DateTimeOffset(dateOfBirth, new TimeSpan(0, 3, 30, 0));
             _addCustomerDtoTestBuilder.With(x => x.DateOfBirth, dateOfBirthOffset);
         }
 
@@ -69,21 +69,21 @@ namespace AcceptanceTestsWithBDD.StepDefinitions
         [When(@"\[user is Added]")]
         public async Task WhenUserIsAdded()
         {
-            var addCustomerDto = _addCustomerDtoTestBuilder.Build();
-            var response = await _client?.PostAsJsonAsync(_client?.BaseAddress, addCustomerDto)!;
+            AddCustomerDto addCustomerDto = _addCustomerDtoTestBuilder.Build();
+            HttpResponseMessage response = await _client?.PostAsJsonAsync(_client?.BaseAddress, addCustomerDto)!;
             response.EnsureSuccessStatusCode();
-            var responseString = await response.Content.ReadAsStringAsync();
+            string responseString = await response.Content.ReadAsStringAsync();
             this._customerDto = JsonSerializer.Deserialize<CustomerDto>(responseString)!;
         }
 
         [Then(@"\[there should be user with above properties]")]
         public async Task ThenThereShouldBeUserWithAboveProperties()
         {
-            var actualCustomerDto = await _client!.GetFromJsonAsync<CustomerDto>($"{_client!.BaseAddress}/{this!._customerDto.Id}");
+            CustomerDto? actualCustomerDto = await _client!.GetFromJsonAsync<CustomerDto>($"{_client!.BaseAddress}/{this!._customerDto!.Id}");
             actualCustomerDto.Should().NotBeNull();
 
-            var addCustomerDto = _addCustomerDtoTestBuilder.Build();
-            var expectedCustomerDto = new CustomerDtoTestBuilder()
+            AddCustomerDto addCustomerDto = _addCustomerDtoTestBuilder.Build();
+            CustomerDto expectedCustomerDto = new CustomerDtoTestBuilder()
                 .With(x => x.Id, _customerDto.Id)
                 .With(x => x.FirstName, addCustomerDto.FirstName)
                 .With(x => x.LastName, addCustomerDto.LastName)

@@ -7,7 +7,7 @@ namespace AcceptanceTestsWithBDD.Abstractions
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public sealed class AutoRollbackAttribute : BeforeAfterTestAttribute
     {
-        private TransactionScope _scope;
+        private TransactionScope _scope = null!;
         public TransactionScopeAsyncFlowOption AsyncFlowOption { get; set; } = TransactionScopeAsyncFlowOption.Enabled;
         public IsolationLevel IsolationLevel { get; set; } = IsolationLevel.ReadCommitted;
         public TransactionScopeOption ScopeOption { get; set; } = TransactionScopeOption.Required;

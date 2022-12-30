@@ -1,5 +1,5 @@
 ﻿using AcceptanceTestsWithBDD.Constants.Customers;
-using Api.Dtos;
+using NearToEndpointDtos.Customers;
 using Utility.ReflectionTools;
 
 namespace AcceptanceTestsWithBDD.TestBuilders.Customers

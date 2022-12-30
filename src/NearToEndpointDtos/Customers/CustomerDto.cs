@@ -1,4 +1,4 @@
-﻿namespace Api.Dtos
+﻿namespace NearToEndpointDtos.Customers
 {
     public class CustomerDto
     {

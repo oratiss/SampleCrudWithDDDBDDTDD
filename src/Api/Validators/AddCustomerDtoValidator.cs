@@ -1,5 +1,5 @@
-﻿using Api.Dtos;
-using FluentValidation;
+﻿using FluentValidation;
+using NearToEndpointDtos.Customers;
 using PhoneNumbers;
 using System.Net.Mail;
 using System.Text.RegularExpressions;

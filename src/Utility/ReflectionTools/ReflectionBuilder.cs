@@ -7,7 +7,7 @@ namespace Utility.ReflectionTools
           where TReflection : class
           where TBuilder : ReflectionBuilder<TReflection, TBuilder>
     {
-        private readonly TBuilder _builderInstance = null;
+        private readonly TBuilder? _builderInstance = null;
 
         public ReflectionBuilder()
         {
@@ -46,10 +46,10 @@ namespace Utility.ReflectionTools
             else
             {
                 GetType().GetField(propertyName, BindingFlags.NonPublic | BindingFlags.Instance)
-                          .SetValue(_builderInstance, value);
+                    ?.SetValue(_builderInstance, value);
             }
 
-            return _builderInstance;
+            return _builderInstance!;
         }
 
 

@@ -12,4 +12,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ApplicationService\ApplicationService.csproj" />
+    <ProjectReference Include="..\NearToEndpointDtos\NearToEndpointDtos.csproj" />
+  </ItemGroup>
+
 </Project>

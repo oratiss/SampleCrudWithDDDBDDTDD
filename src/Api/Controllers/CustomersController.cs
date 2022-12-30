@@ -1,5 +1,6 @@
-﻿using Api.Dtos;
+﻿using ApplicationService.Customers;
 using Microsoft.AspNetCore.Mvc;
+using NearToEndpointDtos.Customers;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,7 +10,12 @@ namespace Api.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
+        private readonly CustomerApplicationService _CustomerApplicationService;
 
+        public CustomersController(ICustomerApplicationService customerApplicationService)
+        {
+            _CustomerApplicationService = (CustomerApplicationService)customerApplicationService;
+        }
 
         // GET: api/<CustomerController>
         [HttpGet]

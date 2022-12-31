@@ -1,4 +1,4 @@
-﻿namespace AcceptanceTestsWithBDD.Constants.Customers
+﻿namespace Common.Constants.Customers
 {
     public class CustomerConstants
     {

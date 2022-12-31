@@ -1,4 +1,4 @@
-﻿using AcceptanceTestsWithBDD.Constants.Customers;
+﻿using Common.Constants.Customers;
 using NearToEndpointDtos.Customers;
 using Utility.ReflectionTools;
 

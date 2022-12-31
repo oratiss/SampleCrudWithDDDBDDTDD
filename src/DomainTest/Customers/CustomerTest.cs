@@ -68,7 +68,7 @@ namespace DomainTest.Customers
         }
 
         [Fact]
-        public void BankAcccountNumber_Should_Not_Be_NullOrWhiteSpace()
+        public void BankAccountNumber_Should_Not_Be_NullOrWhiteSpace()
         {
             Action act = () =>
             {
@@ -80,7 +80,5 @@ namespace DomainTest.Customers
         }
 
         //Todo: due to lck of time, we did cancel adding domain contract and adding domain service of validation. it should be like that.
-
-
     }
 }

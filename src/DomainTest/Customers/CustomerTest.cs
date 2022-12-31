@@ -1,21 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DomainTest.Customers.TestBuilders;
+﻿using DomainTest.Customers.TestBuilders;
+using FluentAssertions;
 
 namespace DomainTest.Customers
 {
     public class CustomerTest
     {
         [Fact]
-        public async Task FirstName_Should_Not_Be_NullORWhiteSpace()
+        public void FirstName_Should_Not_Be_NullOrWhiteSpace()
         {
-            //arrange
-            var customer = new CustomerDomainTestBuilder();
-            //.With(x => x.FirstName, string.Empty)
-            //.Build();
+            Action act = () =>
+            {
+                var customer = new CustomerDomainTestBuilder()
+                    .With(x => x.FirstName, string.Empty)
+                    .Build();
+            };
+            act.Should().Throw<Exception>().WithMessage("First name is null,empty or white space.");
         }
+
+        [Fact]
+        public void LastName_Should_Not_Be_NullOrWhiteSpace()
+        {
+            Action act = () =>
+            {
+                var customer = new CustomerDomainTestBuilder()
+                    .With(x => x.LastName, string.Empty)
+                    .Build();
+            };
+            act.Should().Throw<Exception>().WithMessage("Last name is null, empty or white space.");
+        }
+
+        [Fact]
+        public void Customer_Should_Be_Equal_Or_Greater_Than_Twelve_years_Old()
+        {
+            Action act = () =>
+            {
+                var customer = new CustomerDomainTestBuilder()
+                    .With(x => x.DateOfBirth, new DateTimeOffset(new DateTime(2011, 12, 25), new TimeSpan(0, 3, 30, 0)))
+                    .Build();
+            };
+            act.Should().Throw<Exception>().WithMessage("Customer should be at least 12 years old.");
+        }
+
+
     }
 }

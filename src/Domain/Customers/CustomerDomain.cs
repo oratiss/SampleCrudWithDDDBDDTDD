@@ -2,7 +2,7 @@
 
 namespace Domain.Customers
 {
-    public class CustomerDomain: AggregateRoot
+    public class CustomerDomain : AggregateRoot
     {
         public string FirstName { get; private set; } = null!;
         public string LastName { get; private set; } = null!;
@@ -15,8 +15,32 @@ namespace Domain.Customers
         {
             if (string.IsNullOrWhiteSpace(firstName))
             {
-                //Todo: adding exception caught by domain contract for exceptions + implementation of contract in domain service of Exception
-                //throw new 
+                throw new Exception("First name is null,empty or white space.") { HResult = 10 };
+            }
+
+            if (string.IsNullOrWhiteSpace(lastName))
+            {
+                throw new Exception("Last name is null,empty or white space.") { HResult = 20 };
+            }
+
+            if (DateTimeOffset.Now.Year - DateOfBirth.Year < 12)
+            {
+                throw new Exception("Customer should be at least 12 years old.") { HResult = 30 };
+            }
+
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+            {
+                throw new Exception("PhoneNumber is null, empty or whitespace") { HResult = 40 };
+            }
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                throw new Exception("Email is null, empty or whitespace") { HResult = 50 };
+            }
+
+            if (string.IsNullOrWhiteSpace(bankAccountNumber))
+            {
+                throw new Exception("BankAccountNumber is null, empty or whitespace") { HResult = 60 };
             }
 
             FirstName = firstName;
@@ -26,5 +50,6 @@ namespace Domain.Customers
             Email = email;
             BankAccount = new BankAccount(bankAccountNumber);
         }
+
     }
 }

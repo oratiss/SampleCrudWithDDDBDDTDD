@@ -79,6 +79,8 @@ namespace DomainTest.Customers
             act.Should().Throw<Exception>().WithMessage("BankAccountNumber is null, empty or white space.");
         }
 
+        //Todo: due to lck of time, we did cancel adding domain contract and adding domain service of validation. it should be like that.
+
 
     }
 }

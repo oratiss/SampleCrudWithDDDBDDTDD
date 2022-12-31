@@ -1,4 +1,5 @@
-﻿using Infrastructure.Persistence.MSSQL.Models;
+﻿using Infrastructure.Persistence.MSSQL.Configurations;
+using Infrastructure.Persistence.MSSQL.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.MSSQL.Contexts
@@ -16,6 +17,9 @@ namespace Infrastructure.Persistence.MSSQL.Contexts
 
         public DbSet<Customer> Customers { get; set; }
 
-
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new CustomerConfiguration());
+        }
     }
 }

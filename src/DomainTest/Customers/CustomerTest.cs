@@ -1,8 +1,10 @@
-﻿using DomainTest.Customers.TestBuilders;
+﻿using Domain.Customers;
+using DomainTest.Customers.TestBuilders;
 using FluentAssertions;
 
 namespace DomainTest.Customers
 {
+    //Todo: avoid using hard code messages for exceptions. try using constants.
     public class CustomerTest
     {
         [Fact]
@@ -39,6 +41,42 @@ namespace DomainTest.Customers
                     .Build();
             };
             act.Should().Throw<Exception>().WithMessage("Customer should be at least 12 years old.");
+        }
+
+        [Fact]
+        public void PhoneNumber_Should_Not_Be_NullOrWhiteSpace()
+        {
+            Action act = () =>
+            {
+                var customer = new CustomerDomainTestBuilder()
+                    .With(x => x.PhoneNumber, string.Empty)
+                    .Build();
+            };
+            act.Should().Throw<Exception>().WithMessage("PhoneNumber is null, empty or white space.");
+        }
+
+        [Fact]
+        public void Email_Should_Not_Be_NullOrWhiteSpace()
+        {
+            Action act = () =>
+            {
+                var customer = new CustomerDomainTestBuilder()
+                    .With(x => x.Email, string.Empty)
+                    .Build();
+            };
+            act.Should().Throw<Exception>().WithMessage("Email is null, empty or white space.");
+        }
+
+        [Fact]
+        public void BankAcccountNumber_Should_Not_Be_NullOrWhiteSpace()
+        {
+            Action act = () =>
+            {
+                var customer = new CustomerDomainTestBuilder()
+                    .With(x => x.BankAccount, new BankAccount(string.Empty))
+                    .Build();
+            };
+            act.Should().Throw<Exception>().WithMessage("BankAccountNumber is null, empty or white space.");
         }
 
 

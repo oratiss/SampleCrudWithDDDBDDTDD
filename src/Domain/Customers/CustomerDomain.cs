@@ -30,17 +30,17 @@ namespace Domain.Customers
 
             if (string.IsNullOrWhiteSpace(phoneNumber))
             {
-                throw new Exception("PhoneNumber is null, empty or whitespace") { HResult = 40 };
+                throw new Exception("PhoneNumber is null, empty or white space.") { HResult = 40 };
             }
 
             if (string.IsNullOrWhiteSpace(email))
             {
-                throw new Exception("Email is null, empty or whitespace") { HResult = 50 };
+                throw new Exception("Email is null, empty or white space.") { HResult = 50 };
             }
 
             if (string.IsNullOrWhiteSpace(bankAccountNumber))
             {
-                throw new Exception("BankAccountNumber is null, empty or whitespace") { HResult = 60 };
+                throw new Exception("BankAccountNumber is null, empty or white space.") { HResult = 60 };
             }
 
             FirstName = firstName;

@@ -56,11 +56,9 @@ namespace Infrastructure.Persistence.Mongo.Repositories
             var existingCustomer = await _customersCollection.Find(u => u.Id == customer.Id).SingleOrDefaultAsync();
             if (existingCustomer is not null)
             {
-                existingCustomer.FirstName = customer.FirstName.Trim().ToLower();
-                existingCustomer.LastName = customer.LastName.Trim().ToLower();
+                existingCustomer = TrimAndLowerCaseCustomerProps(customer);
                 existingCustomer.DateOfBirth = customer.DateOfBirth;
                 existingCustomer.PhoneNumber = customer.PhoneNumber;
-                existingCustomer.Email = customer.Email.Trim().ToLower();
                 existingCustomer.BankAccount.Number = customer.BankAccount.Number;
                 await _customersCollection.ReplaceOneAsync(u => u.Id == customer.Id, existingCustomer);
                 var updatedCustomer = await _customersCollection.Find(x => x.Email == customer.Email).SingleOrDefaultAsync();

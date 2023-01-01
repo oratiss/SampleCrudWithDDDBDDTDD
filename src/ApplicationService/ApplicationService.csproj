@@ -11,6 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Infrastructure.Persistence.Mongo\Infrastructure.Persistence.Mongo.csproj" />
     <ProjectReference Include="..\Infrastructure.Persistence.MSSQL\Infrastructure.Persistence.MSSQL.csproj" />
     <ProjectReference Include="..\NearToEndpointDtos\NearToEndpointDtos.csproj" />
   </ItemGroup>

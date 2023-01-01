@@ -33,9 +33,15 @@ namespace Api.Controllers
 
         // POST api/<CustomerController>
         [HttpPost]
-        public void Post([FromBody] AddCustomerDto addCustomerDto)
+        public async Task<ActionResult> Post([FromBody] AddCustomerDto addCustomerDto)
         {
-            
+            var customer = await _CustomerApplicationService.AddCustomerAsync(addCustomerDto);
+            if (!string.IsNullOrWhiteSpace(customer.ErrorMessage))
+            {
+                return Problem(customer.ErrorMessage);
+            }
+
+            return Ok(customer);
         }
 
         // PUT api/<CustomerController>/5

@@ -104,5 +104,10 @@ namespace Infrastructure.Persistence.MSSQL.Repositories
             var items = _dbContext.Customers.Where(predicate).OrderBy(orderBy).AsQueryable();
             return items;
         }
+
+        public async Task Save()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

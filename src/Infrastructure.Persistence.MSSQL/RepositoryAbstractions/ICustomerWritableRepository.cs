@@ -13,6 +13,6 @@ namespace Infrastructure.Persistence.MSSQL.RepositoryAbstractions
 
         IQueryable<Customer> SearchForPeople<TOrderByKey>(Expression<Func<Customer, bool>> predicate,
             Expression<Func<Customer, TOrderByKey>> orderBy);
-
+        Task Save();
     }
 }

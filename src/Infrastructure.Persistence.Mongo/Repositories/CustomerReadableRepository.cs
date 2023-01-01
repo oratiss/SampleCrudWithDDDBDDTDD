@@ -84,5 +84,6 @@ namespace Infrastructure.Persistence.Mongo.Repositories
             var customers = (await _customersCollection.Find(predicate).ToListAsync()).AsQueryable().OrderBy(orderBy);
             return customers;
         }
+
     }
 }

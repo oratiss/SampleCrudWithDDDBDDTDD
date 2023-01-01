@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Infrastructure.Persistence.Mongo.Models;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using Infrastructure.Persistence.Mongo.Models;
 
 namespace Infrastructure.Persistence.Mongo.RepositoryAbstractions
 {
@@ -18,5 +13,6 @@ namespace Infrastructure.Persistence.Mongo.RepositoryAbstractions
 
         Task<IQueryable<Customer>> SearchForPeople<TOrderByKey>(Expression<Func<Customer, bool>> predicate,
             Expression<Func<Customer, TOrderByKey>> orderBy);
+
     }
 }

@@ -1,7 +1,11 @@
 ﻿using Domain.Customers;
 using Infrastructure.Persistence.Mongo.RepositoryAbstractions;
+using WritableCustomer = Infrastructure.Persistence.MSSQL.Models.Customer;
+using ReadableCustomer = Infrastructure.Persistence.Mongo.Models.Customer;
 using Infrastructure.Persistence.MSSQL.RepositoryAbstractions;
+using Mapster;
 using NearToEndpointDtos.Customers;
+using BankAccount = Domain.Customers.BankAccount;
 
 namespace ApplicationService.Customers
 {
@@ -36,16 +40,28 @@ namespace ApplicationService.Customers
                 throw new ArgumentException("The given email is already registered for another account.");
             }
 
+            CustomerDomain? addingCustomerDomain = null;
             try
             {
-                var addingCustomerDomain = new CustomerDomainBuilder()
-                    .With(x => x.FirstName, addCustomerDto.FirstName)
-                    .With(x => x.LastName, addCustomerDto.LastName)
-                    .With(x => x.DateOfBirth, addCustomerDto.DateOfBirth)
-                    .With(x => x.PhoneNumber, addCustomerDto.PhoneNumber)
-                    .With(x => x.Email, addCustomerDto.Email)
-                    .With(x => x.BankAccount, new BankAccount(addCustomerDto.BankAccountNumber))
-                    .Build();
+                addingCustomerDomain = new CustomerDomainBuilder()
+                   .With(x => x.FirstName, addCustomerDto.FirstName)
+                   .With(x => x.LastName, addCustomerDto.LastName)
+                   .With(x => x.DateOfBirth, addCustomerDto.DateOfBirth)
+                   .With(x => x.PhoneNumber, addCustomerDto.PhoneNumber)
+                   .With(x => x.Email, addCustomerDto.Email)
+                   .With(x => x.BankAccount, new BankAccount(addCustomerDto.BankAccountNumber))
+                   .Build();
+
+                var persistingCustomerForWriteSide = addingCustomerDomain.Adapt<WritableCustomer>();
+                var addedToWriteDbCustomer = await _customerWritableRepository.Add(persistingCustomerForWriteSide);
+                await _customerWritableRepository.Save();
+
+                var persistingCustomerForReadSide = addingCustomerDomain.Adapt<ReadableCustomer>();
+                var addedToReadDbCustomer = await _customerReadableRepository.Add(persistingCustomerForReadSide);
+
+                var outputCustomerDto = addedToWriteDbCustomer.Adapt<CustomerDto>();
+                return outputCustomerDto;
+
             }
             catch (Exception e)
             {
@@ -55,15 +71,9 @@ namespace ApplicationService.Customers
                 };
             }
 
-
-            //    //after that we pass domain object to  application layer, convert it to repo entities, store entity in repositories and source related domain event
-            //     // we  have independent background services to read sourced events and sends them to bank application service. update them simultaneously with IsPublished
+            
             //    //on call back of events for example bank account callback,we will update our value object of bank account number
             // and insert new events in database with Is callback completed
-
-            //    //if everything goes well 
-
-            return null;
         }
 
     }

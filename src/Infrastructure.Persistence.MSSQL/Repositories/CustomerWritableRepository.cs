@@ -34,18 +34,28 @@ namespace Infrastructure.Persistence.MSSQL.Repositories
                 throw new InvalidOperationException("Adding entity must be new and with value 0 of Id.");
             }
 
-            var existingCustomer = await _dbContext.Customers.SingleOrDefaultAsync(x =>
-                $"{x.FirstName}-{x.LastName}-{x.DateOfBirth}" ==
-                $"{customer.FirstName.Trim().ToLower()}-{customer.LastName.ToLower()}-{customer.DateOfBirth}");
-            if (existingCustomer is not null)
+            try
             {
-                throw new Exception("A Customer with exact entered first name, last name and birthdate already exists.");
-            }
+                if (_dbContext.Customers.Any())
+                {
+                    var existingCustomer = await _dbContext.Customers.SingleOrDefaultAsync(x =>
+                    $"{x.FirstName}-{x.LastName}-{x.DateOfBirth}" == $"{customer.FirstName.Trim().ToLower()}-{customer.LastName.ToLower()}-{customer.DateOfBirth}");
+                    if (existingCustomer is not null)
+                    {
+                        throw new Exception("A Customer with exact entered first name, last name and birthdate already exists.");
+                    }
 
-            existingCustomer = await _dbContext.Customers.SingleOrDefaultAsync(x => x.Email == customer.Email.Trim().ToLower());
-            if (existingCustomer is not null)
+                    existingCustomer = await _dbContext.Customers.SingleOrDefaultAsync(x => x.Email == customer.Email.Trim().ToLower());
+                    if (existingCustomer is not null)
+                    {
+                        throw new Exception("A Customer with exact entered email already exists.");
+                    }
+                }
+            }
+            catch (Exception e)
             {
-                throw new Exception("A Customer with exact entered email already exists.");
+                Console.WriteLine(e.Message);
+                throw;
             }
 
             customer = TrimAndLowerCaseCustomerProps(customer);
@@ -76,7 +86,7 @@ namespace Infrastructure.Persistence.MSSQL.Repositories
                 throw new Exception("A Customer with exact entered first name, last name and birthdate already exists.");
             }
 
-            existingCustomer = await _dbContext.Customers.SingleOrDefaultAsync(x => x.Email == customer.Email.Trim().ToLower() && x.Id!=customer.Id);
+            existingCustomer = await _dbContext.Customers.SingleOrDefaultAsync(x => x.Email == customer.Email.Trim().ToLower() && x.Id != customer.Id);
             if (existingCustomer is not null)
             {
                 throw new Exception("A Customer with exact entered email already exists.");

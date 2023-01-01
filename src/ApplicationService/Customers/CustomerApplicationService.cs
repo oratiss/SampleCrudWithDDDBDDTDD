@@ -1,11 +1,12 @@
 ﻿using Domain.Customers;
 using Infrastructure.Persistence.Mongo.RepositoryAbstractions;
-using WritableCustomer = Infrastructure.Persistence.MSSQL.Models.Customer;
-using ReadableCustomer = Infrastructure.Persistence.Mongo.Models.Customer;
 using Infrastructure.Persistence.MSSQL.RepositoryAbstractions;
 using Mapster;
 using NearToEndpointDtos.Customers;
 using BankAccount = Domain.Customers.BankAccount;
+using CustomerCreatedEvent = Infrastructure.Persistence.MSSQL.Events.CustomerCreatedEvent;
+using ReadableCustomer = Infrastructure.Persistence.Mongo.Models.Customer;
+using WritableCustomer = Infrastructure.Persistence.MSSQL.Models.Customer;
 
 namespace ApplicationService.Customers
 {
@@ -14,14 +15,12 @@ namespace ApplicationService.Customers
         //todo: wil be completed after writing domain layer with TDD and implementing repositories
         private readonly ICustomerReadableRepository _customerReadableRepository;
         private readonly ICustomerWritableRepository _customerWritableRepository;
-        private readonly CustomerDomain _customerDomain;
 
         public CustomerApplicationService(ICustomerReadableRepository customerReadableRepository,
-            ICustomerWritableRepository customerWritableRepository, CustomerDomain customerDomain)
+            ICustomerWritableRepository customerWritableRepository)
         {
             _customerReadableRepository = customerReadableRepository;
             _customerWritableRepository = customerWritableRepository;
-            _customerDomain = customerDomain;
         }
 
         public async Task<CustomerDto> AddCustomerAsync(AddCustomerDto addCustomerDto)
@@ -53,15 +52,17 @@ namespace ApplicationService.Customers
                    .Build();
 
                 var persistingCustomerForWriteSide = addingCustomerDomain.Adapt<WritableCustomer>();
+                persistingCustomerForWriteSide.CustomerCreatedEvent = addingCustomerDomain.DomainEvents?.SingleOrDefault()?.Adapt<CustomerCreatedEvent>();
+
                 var addedToWriteDbCustomer = await _customerWritableRepository.Add(persistingCustomerForWriteSide);
                 await _customerWritableRepository.Save();
 
                 var persistingCustomerForReadSide = addingCustomerDomain.Adapt<ReadableCustomer>();
+                persistingCustomerForReadSide.Id = addedToWriteDbCustomer.Id;
                 var addedToReadDbCustomer = await _customerReadableRepository.Add(persistingCustomerForReadSide);
 
                 var outputCustomerDto = addedToWriteDbCustomer.Adapt<CustomerDto>();
                 return outputCustomerDto;
-
             }
             catch (Exception e)
             {

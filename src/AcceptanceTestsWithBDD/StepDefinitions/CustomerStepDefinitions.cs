@@ -72,8 +72,7 @@ namespace AcceptanceTestsWithBDD.StepDefinitions
             AddCustomerDto addCustomerDto = _addCustomerDtoTestBuilder.Build();
             HttpResponseMessage response = await _client?.PostAsJsonAsync(_client?.BaseAddress, addCustomerDto)!;
             response.EnsureSuccessStatusCode();
-            string responseString = await response.Content.ReadAsStringAsync();
-            this._customerDto = JsonSerializer.Deserialize<CustomerDto>(responseString)!;
+            this._customerDto = await response.Content.ReadFromJsonAsync<CustomerDto>();
         }
 
         [Then(@"\[there should be user with above properties]")]

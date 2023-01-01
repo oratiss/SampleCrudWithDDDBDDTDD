@@ -6,16 +6,15 @@ namespace Infrastructure.Persistence.MSSQL.Contexts
 {
     public class SampleDbContext: DbContext
     {
-        public SampleDbContext(string connectionString) : base(GetOptions(connectionString))
+        public SampleDbContext()
         {
         }
 
-        private static DbContextOptions GetOptions(string connectionString)
+        public SampleDbContext(DbContextOptions options) : base(options)
         {
-            return SqlServerDbContextOptionsExtensions.UseSqlServer(new DbContextOptionsBuilder(), connectionString).Options;
         }
 
-        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Customer> Customers { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

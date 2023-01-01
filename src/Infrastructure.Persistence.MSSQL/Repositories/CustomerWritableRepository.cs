@@ -1,8 +1,8 @@
 ﻿using Infrastructure.Persistence.MSSQL.Contexts;
 using Infrastructure.Persistence.MSSQL.Models;
-using Infrastructure.Persistence.MSSQL.RepositoryAbstractions;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Infrastructure.Persistence.MSSQL.RepositoryAbstractions;
 
 namespace Infrastructure.Persistence.MSSQL.Repositories
 {
@@ -54,7 +54,7 @@ namespace Infrastructure.Persistence.MSSQL.Repositories
             return addedCustomerEntry.Entity;
         }
 
-        private Customer TrimAndLowerCaseCustomerProps(Customer customer)
+        public Customer TrimAndLowerCaseCustomerProps(Customer customer)
         {
             customer.FirstName = customer.FirstName.Trim().ToLower();
             customer.LastName = customer.LastName.Trim().ToLower();

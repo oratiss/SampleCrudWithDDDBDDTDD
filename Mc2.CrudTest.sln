@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "src\Common\Common
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Persistence.MSSQL", "src\Infrastructure.Persistence.MSSQL\Infrastructure.Persistence.MSSQL.csproj", "{193A6E6F-51AA-44EE-B117-132BBD715556}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Persistence.Mongo", "src\Infrastructure.Persistence.Mongo\Infrastructure.Persistence.Mongo.csproj", "{B91B6660-D21D-40DF-BDE0-059E76FBAD91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,10 @@ Global
 		{193A6E6F-51AA-44EE-B117-132BBD715556}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{193A6E6F-51AA-44EE-B117-132BBD715556}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{193A6E6F-51AA-44EE-B117-132BBD715556}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B91B6660-D21D-40DF-BDE0-059E76FBAD91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B91B6660-D21D-40DF-BDE0-059E76FBAD91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B91B6660-D21D-40DF-BDE0-059E76FBAD91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B91B6660-D21D-40DF-BDE0-059E76FBAD91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,6 +116,7 @@ Global
 		{C8CB480C-C65A-44F1-BC74-490D3DA95AD4} = {7B3AABFA-01F8-4D10-BFB8-63EE372148FC}
 		{1107FB70-0CA0-4C7F-8F14-A1C96316723D} = {7B3AABFA-01F8-4D10-BFB8-63EE372148FC}
 		{193A6E6F-51AA-44EE-B117-132BBD715556} = {7B3AABFA-01F8-4D10-BFB8-63EE372148FC}
+		{B91B6660-D21D-40DF-BDE0-059E76FBAD91} = {7B3AABFA-01F8-4D10-BFB8-63EE372148FC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4B5A26C9-68C1-49D9-9F32-AF907A1730C2}

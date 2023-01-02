@@ -84,12 +84,11 @@ namespace AcceptanceTestsWithBDD.StepDefinitions
             AddCustomerDto addCustomerDto = _addCustomerDtoTestBuilder.Build();
             CustomerDto expectedCustomerDto = new CustomerDtoTestBuilder()
                 .With(x => x.Id, _customerDto.Id)
-                .With(x => x.FirstName, addCustomerDto.FirstName)
-                .With(x => x.LastName, addCustomerDto.LastName)
+                .With(x => x.FirstName, addCustomerDto.FirstName.Trim().ToLower())
+                .With(x => x.LastName, addCustomerDto.LastName.Trim().ToLower())
                 .With(x => x.DateOfBirth, addCustomerDto.DateOfBirth)
                 .With(x => x.PhoneNumber, addCustomerDto.PhoneNumber)
-                .With(x => x.Email, addCustomerDto.Email)
-                .With(x => x.Email, addCustomerDto.Email)
+                .With(x => x.Email, addCustomerDto.Email.Trim().ToLower())
                 .With(x => x.BankAccountNumber, addCustomerDto.BankAccountNumber)
                 .Build();
 

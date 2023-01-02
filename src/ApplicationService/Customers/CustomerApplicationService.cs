@@ -72,10 +72,16 @@ namespace ApplicationService.Customers
                 };
             }
 
-            
+
             //    //on call back of events for example bank account callback,we will update our value object of bank account number
             // and insert new events in database with Is callback completed
         }
 
+        public async Task<CustomerDto> Get(long key)
+        {
+            ReadableCustomer customer = await _customerReadableRepository.Get(key);
+            CustomerDto customerDto = customer.Adapt<CustomerDto>();
+            return customerDto;
+        }
     }
 }

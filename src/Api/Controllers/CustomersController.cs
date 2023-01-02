@@ -26,9 +26,14 @@ namespace Api.Controllers
 
         // GET api/<CustomerController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(long id)
         {
-            return "value";
+            var customer = await _CustomerApplicationService.Get(id);
+            if (!string.IsNullOrWhiteSpace(customer.ErrorMessage))
+            {
+                return NotFound(customer.ErrorMessage);
+            }
+            return Ok(customer);
         }
 
         // POST api/<CustomerController>

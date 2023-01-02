@@ -2,7 +2,6 @@
 using AcceptanceTestsWithBDD.TestBuilders.Customers;
 using NearToEndpointDtos.Customers;
 using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace AcceptanceTestsWithBDD.StepDefinitions
 {

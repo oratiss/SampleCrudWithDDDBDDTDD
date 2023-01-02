@@ -1,5 +1,6 @@
 using ApplicationService.Customers;
 using Domain.Customers;
+using Infrastructure.Persistence.Mongo.Configurations;
 using Infrastructure.Persistence.Mongo.Repositories;
 using Infrastructure.Persistence.Mongo.RepositoryAbstractions;
 using Infrastructure.Persistence.MSSQL.Contexts;
@@ -22,9 +23,11 @@ builder.Services.AddDbContext<SampleDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-
-builder.Services.AddScoped<ICustomerReadableRepository, CustomerReadableRepository>();
 builder.Services.AddScoped<ICustomerWritableRepository, CustomerWritableRepository>();
+
+builder.Services.Configure<MongoDbConfiguration>(builder.Configuration.GetSection("MongoDB"));
+builder.Services.AddSingleton<ICustomerReadableRepository, CustomerReadableRepository>();
+
 builder.Services.AddScoped<ICustomerApplicationService, CustomerApplicationService>();
 
 

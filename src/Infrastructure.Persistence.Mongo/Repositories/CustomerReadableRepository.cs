@@ -1,19 +1,20 @@
 ﻿using Infrastructure.Persistence.Mongo.Models;
 using Infrastructure.Persistence.Mongo.RepositoryAbstractions;
-using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using System.Linq.Expressions;
+using Infrastructure.Persistence.Mongo.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Persistence.Mongo.Repositories
 {
     public class CustomerReadableRepository : ICustomerReadableRepository
     {
         private readonly IMongoCollection<Customer> _customersCollection;
-        public CustomerReadableRepository(IConfiguration config)
+        public CustomerReadableRepository(IOptions<MongoDbConfiguration> mongoDbOptions)
         {
-            var mongoClient = new MongoClient(config.GetConnectionString("MongoConnection"));
-            var mongoDatabase = mongoClient.GetDatabase("SampleDDDBDDTDD_Db");
-            _customersCollection = mongoDatabase.GetCollection<Customer>("Customers");
+            var mongoClient = new MongoClient(mongoDbOptions.Value.ConnectionUri);
+            var mongoDatabase = mongoClient.GetDatabase(mongoDbOptions.Value.DatabaseName);
+            _customersCollection = mongoDatabase.GetCollection<Customer>(mongoDbOptions.Value.CollectionName);
         }
         public async Task<Customer> Get(long key)
         {

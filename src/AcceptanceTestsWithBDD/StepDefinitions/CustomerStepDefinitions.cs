@@ -7,24 +7,14 @@ using System.Text.Json;
 namespace AcceptanceTestsWithBDD.StepDefinitions
 {
     [Binding]
-    public sealed class CustomerStepDefinitions : BaseTest
+    public class CustomerStepDefinitions : BaseTest
     {
-        private HttpClient? _client;
-        private readonly ScenarioContext _scenarioContext;
         private readonly AddCustomerDtoTestBuilder _addCustomerDtoTestBuilder = new AddCustomerDtoTestBuilder();
         private CustomerDto? _customerDto;
 
-
-        public CustomerStepDefinitions(ScenarioContext scenarioContext)
+        public CustomerStepDefinitions()
         {
-            var applicationFactory = new BaseTest().WithWebHostBuilder(builder =>
-            {
-                Server.PreserveExecutionContext = true;
-            });
-
-            _client = applicationFactory.CreateClient();
-            _client.BaseAddress = new Uri("https://localhost:7014/api/Customers");
-            _scenarioContext = scenarioContext;
+            if (client != null) client.BaseAddress = new Uri("https://localhost:7014/api/Customers");
         }
 
         [Given(@"\[FirstName is Masoud]")]
@@ -70,7 +60,7 @@ namespace AcceptanceTestsWithBDD.StepDefinitions
         public async Task WhenUserIsAdded()
         {
             AddCustomerDto addCustomerDto = _addCustomerDtoTestBuilder.Build();
-            HttpResponseMessage response = await _client?.PostAsJsonAsync(_client?.BaseAddress, addCustomerDto)!;
+            HttpResponseMessage response = await client?.PostAsJsonAsync(client?.BaseAddress, addCustomerDto)!;
             response.EnsureSuccessStatusCode();
             this._customerDto = await response.Content.ReadFromJsonAsync<CustomerDto>();
         }
@@ -78,7 +68,7 @@ namespace AcceptanceTestsWithBDD.StepDefinitions
         [Then(@"\[there should be user with above properties]")]
         public async Task ThenThereShouldBeUserWithAboveProperties()
         {
-            CustomerDto? actualCustomerDto = await _client!.GetFromJsonAsync<CustomerDto>($"{_client!.BaseAddress}/{this!._customerDto!.Id}");
+            CustomerDto? actualCustomerDto = await client!.GetFromJsonAsync<CustomerDto>($"{client!.BaseAddress}/{this!._customerDto!.Id}");
             actualCustomerDto.Should().NotBeNull();
 
             AddCustomerDto addCustomerDto = _addCustomerDtoTestBuilder.Build();
@@ -94,6 +84,9 @@ namespace AcceptanceTestsWithBDD.StepDefinitions
 
             actualCustomerDto.Should().BeEquivalentTo(expectedCustomerDto);
         }
+
+
+
 
 
 

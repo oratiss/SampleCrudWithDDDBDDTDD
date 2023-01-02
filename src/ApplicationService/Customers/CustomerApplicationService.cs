@@ -55,7 +55,6 @@ namespace ApplicationService.Customers
                 persistingCustomerForWriteSide.CustomerCreatedEvent = addingCustomerDomain.DomainEvents?.SingleOrDefault()?.Adapt<CustomerCreatedEvent>();
 
                 var addedToWriteDbCustomer = await _customerWritableRepository.Add(persistingCustomerForWriteSide);
-                await _customerWritableRepository.Save();
 
                 var persistingCustomerForReadSide = addingCustomerDomain.Adapt<ReadableCustomer>();
                 persistingCustomerForReadSide.Id = addedToWriteDbCustomer.Id;

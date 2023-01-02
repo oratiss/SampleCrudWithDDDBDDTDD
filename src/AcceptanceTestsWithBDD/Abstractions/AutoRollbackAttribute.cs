@@ -4,7 +4,7 @@ using Xunit.Sdk;
 
 namespace AcceptanceTestsWithBDD.Abstractions
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public sealed class AutoRollbackAttribute : BeforeAfterTestAttribute
     {
         private TransactionScope _scope = null!;
@@ -13,11 +13,6 @@ namespace AcceptanceTestsWithBDD.Abstractions
         public TransactionScopeOption ScopeOption { get; set; } = TransactionScopeOption.Required;
         public long TimeoutInMs { get; set; } = -1;
 
-        public override void After(MethodInfo methodUnderTest)
-        {
-            _scope.Dispose();
-        }
-
         public override void Before(MethodInfo methodUnderTest)
         {
             var options = new TransactionOptions { IsolationLevel = IsolationLevel };
@@ -25,6 +20,11 @@ namespace AcceptanceTestsWithBDD.Abstractions
                 options.Timeout = TimeSpan.FromMilliseconds(TimeoutInMs);
 
             _scope = new TransactionScope(ScopeOption, options, AsyncFlowOption);
+        }
+
+        public override void After(MethodInfo methodUnderTest)
+        {
+            _scope.Dispose();
         }
     }
 }

@@ -61,6 +61,7 @@ namespace Infrastructure.Persistence.MSSQL.Repositories
             customer = TrimAndLowerCaseCustomerProps(customer);
 
             var addedCustomerEntry = await _dbContext.AddAsync(customer);
+            await _dbContext.SaveChangesAsync();
             return addedCustomerEntry.Entity;
         }
 

@@ -30,7 +30,7 @@ namespace EventPublisherWorkerService
                 {
                     foreach (var unpublishedEvent in unpublishedCustomerCreatedEvents)
                     {
-                        //Todo: make AddBankAccount with UserId and user value objects and pass it to BankApplicationService
+                        //Todo: make AddBankAccount with UserId and user value objects from unpublishedEvent and pass it to BankApplicationService
                         //Todo: on success result, update event and resource it in db
                     }
                 }

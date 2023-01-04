@@ -38,11 +38,11 @@ namespace Infrastructure.Persistence.MSSQL.Repositories
             {
                 if (_dbContext.Customers.Any())
                 {
-                    var existingBankAccount = await _dbContext.BankAccounts.SingleOrDefaultAsync(x =>
+                    var existingBankAccounts = _dbContext.BankAccounts.Where(x =>
                         $"{x.CustomerVoForBankAccount.FullName}-{x.CustomerVoForBankAccount.DateOfBirth}" == $"{bankAccount.CustomerVoForBankAccount.FullName.Trim().ToLower()}-{bankAccount.CustomerVoForBankAccount.DateOfBirth}");
-                    if (existingBankAccount is not null)
+                    if (existingBankAccounts.Any())
                     {
-                        throw new Exception("A BankAccount with exact entered full name and birthdate already exists.");
+                        throw new Exception("One or more BankAccounts with exact entered full name and birthdate already exist.");
                     }
                 }
             }
@@ -66,8 +66,8 @@ namespace Infrastructure.Persistence.MSSQL.Repositories
                 throw new Exception("There is no BankAccount With Given Id.");
             }
 
-            existingBankAccount = await _dbContext.BankAccounts.SingleOrDefaultAsync(x => $"{x.CustomerVoForBankAccount.FullName}-{x.CustomerVoForBankAccount.DateOfBirth}" == $"{bankAccount.CustomerVoForBankAccount.FullName.Trim().ToLower()}-{bankAccount.CustomerVoForBankAccount.DateOfBirth}");
-            if (existingBankAccount is not null)
+            var existingBankAccounts = _dbContext.BankAccounts.Where(x => $"{x.CustomerVoForBankAccount.FullName}-{x.CustomerVoForBankAccount.DateOfBirth}" == $"{bankAccount.CustomerVoForBankAccount.FullName.Trim().ToLower()}-{bankAccount.CustomerVoForBankAccount.DateOfBirth}");
+            if (existingBankAccounts.Any())
             {
                 throw new Exception("A BankAccount with exact entered full name and birthdate already exists.");
             }

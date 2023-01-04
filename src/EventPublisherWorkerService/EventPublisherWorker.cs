@@ -26,7 +26,7 @@ namespace EventPublisherWorkerService
                         {
                             CustomerFullName = $"{x.CustomerCreatedEvent!.Customer.FirstName} {x.CustomerCreatedEvent!.Customer.LastName}",
                             DateOfBirth = x.DateOfBirth,
-                            x.CustomerCreatedEvent.BankAccountNumber,
+                            AccountNumber = x.CustomerCreatedEvent.BankAccountNumber,
                             x.CustomerCreatedEvent.CustomerId,
                             x.CustomerCreatedEvent.IsPublished,
                         })

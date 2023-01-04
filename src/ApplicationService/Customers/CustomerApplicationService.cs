@@ -12,7 +12,6 @@ namespace ApplicationService.Customers
 {
     public class CustomerApplicationService : ICustomerApplicationService
     {
-        //todo: wil be completed after writing domain layer with TDD and implementing repositories
         private readonly ICustomerReadableRepository _customerReadableRepository;
         private readonly ICustomerWritableRepository _customerWritableRepository;
 

@@ -17,7 +17,7 @@ namespace Infrastructure.Persistence.MSSQL.Repositories
 
         public async Task<Customer> Get(long key)
         {
-            var existingCustomer = await _dbContext.Customers.SingleOrDefaultAsync(x => x.Id == key);
+            var existingCustomer = await _dbContext.Customers.FindAsync(key);
             return existingCustomer!;
         }
 
@@ -75,22 +75,22 @@ namespace Infrastructure.Persistence.MSSQL.Repositories
 
         public async Task<Customer> Update(Customer customer)
         {
-            var existingCustomer = await _dbContext.Customers.SingleOrDefaultAsync(x => x.Id == customer.Id);
+            var existingCustomer = await _dbContext.Customers.FindAsync(customer.Id);
             if (existingCustomer is null)
             {
                 throw new Exception("There is no Customer With Given Id.");
             }
 
-            existingCustomer = await _dbContext.Customers.SingleOrDefaultAsync(x => $"{x.FirstName}-{x.LastName}-{x.DateOfBirth}" == $"{customer.FirstName.Trim().ToLower()}-{customer.LastName.ToLower()}-{customer.DateOfBirth}");
-            if (existingCustomer is not null)
+            var existingCustomers = await _dbContext.Customers.Where(x => $"{x.FirstName}-{x.LastName}-{x.DateOfBirth}" == $"{customer.FirstName.Trim().ToLower()}-{customer.LastName.ToLower()}-{customer.DateOfBirth}").ToListAsync();
+            if (existingCustomers.Any())
             {
-                throw new Exception("A Customer with exact entered first name, last name and birthdate already exists.");
+                throw new Exception("One or more customers with exact entered first name, last name and birthdate already exist.");
             }
 
-            existingCustomer = await _dbContext.Customers.SingleOrDefaultAsync(x => x.Email == customer.Email.Trim().ToLower() && x.Id != customer.Id);
-            if (existingCustomer is not null)
+            existingCustomers = await _dbContext.Customers.Where(x => x.Email == customer.Email.Trim().ToLower() && x.Id != customer.Id).ToListAsync();
+            if (existingCustomers.Any())
             {
-                throw new Exception("A Customer with exact entered email already exists.");
+                throw new Exception("One or more customers with exact entered email already exist.");
             }
 
             customer = TrimAndLowerCaseCustomerProps(customer);
@@ -100,7 +100,7 @@ namespace Infrastructure.Persistence.MSSQL.Repositories
 
         public async Task Delete(long key)
         {
-            var existingCustomer = await _dbContext.Customers.SingleOrDefaultAsync(x => x.Id == key);
+            var existingCustomer = await _dbContext.Customers.FindAsync(key);
             if (existingCustomer is null)
             {
                 throw new Exception("There is no Customer With Given Id.");
@@ -112,8 +112,8 @@ namespace Infrastructure.Persistence.MSSQL.Repositories
 
         public IQueryable<Customer> SearchForPeople<TOrderByKey>(Expression<Func<Customer, bool>> predicate, Expression<Func<Customer, TOrderByKey>> orderBy)
         {
-            var items = _dbContext.Customers.Where(predicate).OrderBy(orderBy).AsQueryable();
-            return items;
+            var customers = _dbContext.Customers.Where(predicate).OrderBy(orderBy).AsQueryable();
+            return customers;
         }
 
         public async Task Save()

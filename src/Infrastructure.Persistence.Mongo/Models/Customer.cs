@@ -8,8 +8,6 @@
         public DateTimeOffset DateOfBirth { get; set; }
         public string PhoneNumber { get; set; } = null!;
         public string Email { get; set; } = null!;
-
-        //value objects
-        public BankAccount BankAccount { get; set; } = null!;
+        public string BankAccountNumber { get; set; } = null!;
     }
 }

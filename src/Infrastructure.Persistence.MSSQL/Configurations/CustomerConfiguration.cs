@@ -8,7 +8,7 @@ namespace Infrastructure.Persistence.MSSQL.Configurations
     {
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
-            builder.ToTable("Customer");
+            builder.ToTable("Customer", "Customer");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.FirstName).IsRequired().HasMaxLength(100);
             builder.Property(x => x.LastName).IsRequired().HasMaxLength(200);
@@ -20,7 +20,7 @@ namespace Infrastructure.Persistence.MSSQL.Configurations
                 ba.WithOwner(x => x.Customer).HasForeignKey("CustomerId");
                 ba.Property<long>(x => x.CustomerId).HasColumnName("CustomerId");
                 ba.Property(x => x.Number).IsRequired().HasMaxLength(10).HasColumnType("varchar(10)");
-                ba.ToTable("BankAccount");
+                ba.ToTable("BankAccountVoForCustomer", "Customer");
             });
             builder.OwnsOne(x => x.CustomerCreatedEvent, cce =>
             {
@@ -30,7 +30,7 @@ namespace Infrastructure.Persistence.MSSQL.Configurations
                 cce.Property(x => x.DateTime).IsRequired().HasColumnType("datetimeoffset(7)");
                 cce.Property(x => x.IsPublished).IsRequired(false).HasColumnType("bit");
                 cce.Property(x => x.IsCallbackCompleted).IsRequired(false).HasColumnType("bit");
-                cce.ToTable("CustomerCreatedEvent");
+                cce.ToTable("CustomerCreatedEvent", "Customer");
             });
         }
     }

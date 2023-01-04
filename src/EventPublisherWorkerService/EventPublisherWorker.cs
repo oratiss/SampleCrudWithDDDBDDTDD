@@ -22,7 +22,14 @@ namespace EventPublisherWorkerService
 
                 var unpublishedCustomerCreatedEvents =
                     await _dbContext.Customers
-                        .Select(x => x.CustomerCreatedEvent)
+                        .Select(x => new 
+                        {
+                            CustomerFullName = $"{x.CustomerCreatedEvent!.Customer.FirstName} {x.CustomerCreatedEvent!.Customer.LastName}",
+                            DateOfBirth = x.DateOfBirth,
+                            x.CustomerCreatedEvent.BankAccountNumber,
+                            x.CustomerCreatedEvent.CustomerId,
+                            x.CustomerCreatedEvent.IsPublished,
+                        })
                         .Where(x=>x.IsPublished != null && !x.IsPublished.Value)
                         .ToListAsync(cancellationToken: stoppingToken);
 

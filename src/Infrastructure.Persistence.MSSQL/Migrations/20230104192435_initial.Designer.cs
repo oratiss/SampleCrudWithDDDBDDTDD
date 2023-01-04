@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.MSSQL.Migrations
 {
     [DbContext(typeof(SampleDbContext))]
-    [Migration("20230101200524_initial")]
+    [Migration("20230104192435_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -24,6 +24,30 @@ namespace Infrastructure.Persistence.MSSQL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Infrastructure.Persistence.MSSQL.Models.BankAccount", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("AccountNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
+
+                    b.Property<DateTimeOffset>("CreateDateTime")
+                        .HasColumnType("datetimeoffset(7)");
+
+                    b.Property<DateTimeOffset?>("UpdateDateTime")
+                        .HasColumnType("datetimeoffset(7)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BankAccount", "Financial");
+                });
 
             modelBuilder.Entity("Infrastructure.Persistence.MSSQL.Models.Customer", b =>
                 {
@@ -58,7 +82,36 @@ namespace Infrastructure.Persistence.MSSQL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customer", (string)null);
+                    b.ToTable("Customer", "Customer");
+                });
+
+            modelBuilder.Entity("Infrastructure.Persistence.MSSQL.Models.BankAccount", b =>
+                {
+                    b.OwnsOne("Infrastructure.Persistence.MSSQL.Models.CustomerVoForBankAccount", "CustomerVoForBankAccount", b1 =>
+                        {
+                            b1.Property<long>("BankAccountId")
+                                .HasColumnType("bigint")
+                                .HasColumnName("BankAccountId");
+
+                            b1.Property<DateTimeOffset>("DateOfBirth")
+                                .HasColumnType("datetimeoffset(7)");
+
+                            b1.Property<string>("FullName")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("BankAccountId");
+
+                            b1.ToTable("CustomerVoForBankAccount", "Financial");
+
+                            b1.WithOwner("BankAccount")
+                                .HasForeignKey("BankAccountId");
+
+                            b1.Navigation("BankAccount");
+                        });
+
+                    b.Navigation("CustomerVoForBankAccount")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.MSSQL.Models.Customer", b =>
@@ -85,7 +138,7 @@ namespace Infrastructure.Persistence.MSSQL.Migrations
 
                             b1.HasKey("CustomerId");
 
-                            b1.ToTable("CustomerCreatedEvent", (string)null);
+                            b1.ToTable("CustomerCreatedEvent", "Customer");
 
                             b1.WithOwner("Customer")
                                 .HasForeignKey("CustomerId");
@@ -93,7 +146,7 @@ namespace Infrastructure.Persistence.MSSQL.Migrations
                             b1.Navigation("Customer");
                         });
 
-                    b.OwnsOne("Infrastructure.Persistence.MSSQL.Models.BankAccount", "BankAccount", b1 =>
+                    b.OwnsOne("Infrastructure.Persistence.MSSQL.Models.BankAccountVoForCustomer", "BankAccount", b1 =>
                         {
                             b1.Property<long>("CustomerId")
                                 .HasColumnType("bigint")
@@ -106,7 +159,7 @@ namespace Infrastructure.Persistence.MSSQL.Migrations
 
                             b1.HasKey("CustomerId");
 
-                            b1.ToTable("BankAccount", (string)null);
+                            b1.ToTable("BankAccountVoForCustomer", "Customer");
 
                             b1.WithOwner("Customer")
                                 .HasForeignKey("CustomerId");

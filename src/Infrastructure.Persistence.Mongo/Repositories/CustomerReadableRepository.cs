@@ -1,9 +1,9 @@
-﻿using Infrastructure.Persistence.Mongo.Models;
-using Infrastructure.Persistence.Mongo.RepositoryAbstractions;
+﻿using Infrastructure.Persistence.Mongo.RepositoryAbstractions;
 using MongoDB.Driver;
 using System.Linq.Expressions;
 using Infrastructure.Persistence.Mongo.Configurations;
 using Microsoft.Extensions.Options;
+using Infrastructure.Persistence.Mongo.Models;
 
 namespace Infrastructure.Persistence.Mongo.Repositories
 {
@@ -60,7 +60,7 @@ namespace Infrastructure.Persistence.Mongo.Repositories
                 existingCustomer = TrimAndLowerCaseCustomerProps(customer);
                 existingCustomer.DateOfBirth = customer.DateOfBirth;
                 existingCustomer.PhoneNumber = customer.PhoneNumber;
-                existingCustomer.BankAccount.Number = customer.BankAccount.Number;
+                existingCustomer.BankAccountNumber = customer.BankAccountNumber;
                 await _customersCollection.ReplaceOneAsync(u => u.Id == customer.Id, existingCustomer);
                 var updatedCustomer = await _customersCollection.Find(x => x.Email == customer.Email).SingleOrDefaultAsync();
                 return updatedCustomer;

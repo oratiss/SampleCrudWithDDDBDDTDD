@@ -16,9 +16,12 @@ namespace Infrastructure.Persistence.MSSQL.Contexts
 
         public DbSet<Customer> Customers { get; set; } = null!;
 
+        public DbSet<BankAccount> BankAccounts { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new CustomerConfiguration());
+            modelBuilder.ApplyConfiguration(new BankAccountConfiguration());
         }
     }
 }

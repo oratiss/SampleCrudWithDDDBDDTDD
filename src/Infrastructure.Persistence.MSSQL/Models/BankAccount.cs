@@ -1,10 +1,12 @@
-﻿
+﻿using Infrastructure.Persistence.MSSQL.BaseModels;
+
 namespace Infrastructure.Persistence.MSSQL.Models
 {
-    public class BankAccount
+    public class BankAccount: PersistingEntity<long>
     {
-        public string Number { get; set; } = null!;
-        public long CustomerId { get; set; }
-        public Customer Customer { get; set; } = null!;
+        public string AccountNumber { get; set; } = null!;
+        public DateTimeOffset CreateDateTime { get; set; }
+        public DateTimeOffset? UpdateDateTime { get; set; }
+        public CustomerVoForBankAccount CustomerVoForBankAccount { get; set; } = null!;
     }
 }

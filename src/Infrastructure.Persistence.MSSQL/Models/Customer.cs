@@ -12,7 +12,7 @@ namespace Infrastructure.Persistence.MSSQL.Models
         public string Email { get; set; } = null!;
         
         //value objects
-        public BankAccount BankAccount { get; set; } = null!;
+        public BankAccountVoForCustomer BankAccount { get; set; } = null!;
 
         //domain events as value object
         public CustomerCreatedEvent? CustomerCreatedEvent { get; set; }

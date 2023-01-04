@@ -72,12 +72,13 @@ namespace AcceptanceTestsWithBDD.Abstractions
 
         private void ClearWriteTestDb()
         {
-            string[] tablesToClean = { "Customer", "BankAccount", "CustomerCreatedEvent" };
+            string[] tablesToClean = { "Customer", "BankAccountVoForCustomer", "CustomerCreatedEvent" };
             using SqlConnection connection = new(_configuration.GetConnectionString("DefaultConnection"));
+            string schema = "Customer";
             connection.Open();
             foreach (string table in tablesToClean)
             {
-                using SqlCommand cmd = new("Delete " + table, connection);
+                using SqlCommand cmd = new($"Delete [{schema}].[{table}]", connection);
                 cmd.ExecuteNonQuery();
             }
         }

@@ -11,8 +11,31 @@ namespace Infrastructure.Persistence.MSSQL.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "Financial");
+
+            migrationBuilder.EnsureSchema(
+                name: "Customer");
+
+            migrationBuilder.CreateTable(
+                name: "BankAccount",
+                schema: "Financial",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountNumber = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false),
+                    CreateDateTime = table.Column<DateTimeOffset>(type: "datetimeoffset(7)", nullable: false),
+                    UpdateDateTime = table.Column<DateTimeOffset>(type: "datetimeoffset(7)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BankAccount", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Customer",
+                schema: "Customer",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -29,7 +52,29 @@ namespace Infrastructure.Persistence.MSSQL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BankAccount",
+                name: "CustomerVoForBankAccount",
+                schema: "Financial",
+                columns: table => new
+                {
+                    BankAccountId = table.Column<long>(type: "bigint", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateOfBirth = table.Column<DateTimeOffset>(type: "datetimeoffset(7)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerVoForBankAccount", x => x.BankAccountId);
+                    table.ForeignKey(
+                        name: "FK_CustomerVoForBankAccount_BankAccount_BankAccountId",
+                        column: x => x.BankAccountId,
+                        principalSchema: "Financial",
+                        principalTable: "BankAccount",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BankAccountVoForCustomer",
+                schema: "Customer",
                 columns: table => new
                 {
                     CustomerId = table.Column<long>(type: "bigint", nullable: false),
@@ -37,10 +82,11 @@ namespace Infrastructure.Persistence.MSSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BankAccount", x => x.CustomerId);
+                    table.PrimaryKey("PK_BankAccountVoForCustomer", x => x.CustomerId);
                     table.ForeignKey(
-                        name: "FK_BankAccount_Customer_CustomerId",
+                        name: "FK_BankAccountVoForCustomer_Customer_CustomerId",
                         column: x => x.CustomerId,
+                        principalSchema: "Customer",
                         principalTable: "Customer",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -48,6 +94,7 @@ namespace Infrastructure.Persistence.MSSQL.Migrations
 
             migrationBuilder.CreateTable(
                 name: "CustomerCreatedEvent",
+                schema: "Customer",
                 columns: table => new
                 {
                     CustomerId = table.Column<long>(type: "bigint", nullable: false),
@@ -62,6 +109,7 @@ namespace Infrastructure.Persistence.MSSQL.Migrations
                     table.ForeignKey(
                         name: "FK_CustomerCreatedEvent_Customer_CustomerId",
                         column: x => x.CustomerId,
+                        principalSchema: "Customer",
                         principalTable: "Customer",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -72,13 +120,24 @@ namespace Infrastructure.Persistence.MSSQL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BankAccount");
+                name: "BankAccountVoForCustomer",
+                schema: "Customer");
 
             migrationBuilder.DropTable(
-                name: "CustomerCreatedEvent");
+                name: "CustomerCreatedEvent",
+                schema: "Customer");
 
             migrationBuilder.DropTable(
-                name: "Customer");
+                name: "CustomerVoForBankAccount",
+                schema: "Financial");
+
+            migrationBuilder.DropTable(
+                name: "Customer",
+                schema: "Customer");
+
+            migrationBuilder.DropTable(
+                name: "BankAccount",
+                schema: "Financial");
         }
     }
 }

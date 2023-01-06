@@ -8,5 +8,6 @@
         public string CustomerFullName { get; set; } = null!;
         public DateTimeOffset CreateDateTime { get; set; }
         public DateTimeOffset? UpdateDateTime { get; set; }
+        public string? ErrorMessage { get; set; }
     }
 }

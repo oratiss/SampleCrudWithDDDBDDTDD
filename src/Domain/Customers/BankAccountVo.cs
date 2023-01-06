@@ -2,11 +2,11 @@
 
 namespace Domain.Customers
 {
-    public class BankAccount: ValueObject
+    public class BankAccountVo: ValueObject
     {
         public string Number { get; private set; } = null!;
 
-        public BankAccount(string number)
+        public BankAccountVo(string number)
         {
             Number = number;
         }

@@ -73,7 +73,7 @@ namespace DomainTest.Customers
             Action act = () =>
             {
                 var customer = new CustomerDomainTestBuilder()
-                    .With(x => x.BankAccount, new BankAccount(string.Empty))
+                    .With(x => x.BankAccount, new BankAccountVo(string.Empty))
                     .Build();
             };
             act.Should().Throw<Exception>().WithMessage("BankAccountNumber is null, empty or white space.");

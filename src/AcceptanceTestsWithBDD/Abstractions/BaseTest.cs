@@ -88,7 +88,7 @@ namespace AcceptanceTestsWithBDD.Abstractions
             MongoDbConfiguration? mongoConfiguration = _configuration.GetSection("MongoDb").Get<MongoDbConfiguration>();
             MongoClient mongoClient = new(mongoConfiguration.ConnectionUri);
             IMongoDatabase? mongoDatabase = mongoClient.GetDatabase(mongoConfiguration.DatabaseName);
-            IMongoCollection<Customer>? customersCollection = mongoDatabase.GetCollection<Customer>(mongoConfiguration.CollectionName);
+            IMongoCollection<Customer>? customersCollection = mongoDatabase.GetCollection<Customer>(mongoConfiguration.CustomerCollectionName);
             await customersCollection.DeleteManyAsync(Builders<Customer>.Filter.Where(x => true));
         }
     }

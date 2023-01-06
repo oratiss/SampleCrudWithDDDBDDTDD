@@ -9,7 +9,7 @@ namespace Domain.Customers
         public DateTimeOffset DateOfBirth { get; private set; }
         public string PhoneNumber { get; private set; } = null!;
         public string Email { get; private set; } = null!;
-        public BankAccount BankAccount { get; private set; } = null!;
+        public BankAccountVo BankAccount { get; private set; } = null!;
 
         public CustomerDomain(string firstName, string lastName, DateTimeOffset dateOfBirth, string phoneNumber, string email, string bankAccountNumber)
         {
@@ -48,7 +48,7 @@ namespace Domain.Customers
             DateOfBirth = dateOfBirth;
             PhoneNumber = phoneNumber;
             Email = email;
-            BankAccount = new BankAccount(bankAccountNumber);
+            BankAccount = new BankAccountVo(bankAccountNumber);
         }
 
     }

@@ -14,26 +14,26 @@ namespace Infrastructure.Persistence.Mongo.Repositories
         {
             var mongoClient = new MongoClient(mongoDbOptions.Value.ConnectionUri);
             var mongoDatabase = mongoClient.GetDatabase(mongoDbOptions.Value.DatabaseName);
-            _customersCollection = mongoDatabase.GetCollection<Customer>(mongoDbOptions.Value.CollectionName);
+            _customersCollection = mongoDatabase.GetCollection<Customer>(mongoDbOptions.Value.CustomerCollectionName);
         }
         public async Task<Customer> Get(long key)
         {
             var customer = await _customersCollection.Find(u => u.Id == key).SingleOrDefaultAsync();
-            if (customer is not null)
+            if (customer is null)
             {
-                return customer;
+                throw new Exception("Customer Not Found");
             }
-            throw new Exception("Customer Not Found");
+            return customer;
         }
 
         public async Task<IQueryable<Customer>> GetAll()
         {
             var allCustomers = await _customersCollection.Find(u => true).ToListAsync();
-            if (allCustomers.Any())
+            if (!allCustomers.Any())
             {
-                return allCustomers.AsQueryable();
+                throw new Exception("Customers Not Found");
             }
-            throw new Exception("Customers Not Found");
+            return allCustomers.AsQueryable();
         }
 
         public async Task<Customer> Add(Customer customer)
@@ -55,28 +55,29 @@ namespace Infrastructure.Persistence.Mongo.Repositories
         public async Task<Customer> Update(Customer customer)
         {
             var existingCustomer = await _customersCollection.Find(u => u.Id == customer.Id).SingleOrDefaultAsync();
-            if (existingCustomer is not null)
+
+            if (existingCustomer is null)
             {
-                existingCustomer = TrimAndLowerCaseCustomerProps(customer);
-                existingCustomer.DateOfBirth = customer.DateOfBirth;
-                existingCustomer.PhoneNumber = customer.PhoneNumber;
-                existingCustomer.BankAccountNumber = customer.BankAccountNumber;
-                await _customersCollection.ReplaceOneAsync(u => u.Id == customer.Id, existingCustomer);
-                var updatedCustomer = await _customersCollection.Find(x => x.Email == customer.Email).SingleOrDefaultAsync();
-                return updatedCustomer;
+                throw new Exception("Customer Not Found");
             }
 
-            throw new Exception("Customer Not Found");
+            existingCustomer = TrimAndLowerCaseCustomerProps(customer);
+            existingCustomer.DateOfBirth = customer.DateOfBirth;
+            existingCustomer.PhoneNumber = customer.PhoneNumber;
+            existingCustomer.BankAccountNumber = customer.BankAccountNumber;
+            await _customersCollection.ReplaceOneAsync(u => u.Id == customer.Id, existingCustomer);
+            var updatedCustomer = await _customersCollection.Find(x => x.Email == customer.Email.Trim().ToLower()).SingleOrDefaultAsync();
+            return updatedCustomer;
         }
 
         public async Task Delete(long key)
         {
             var user = await _customersCollection.Find(u => u.Id == key).SingleOrDefaultAsync();
-            if (user is not null)
+            if (user is null)
             {
-                await _customersCollection.DeleteOneAsync(u => u.Id == key);
+                throw new Exception("Customer Not Found");
             }
-            throw new Exception("Customer Not Found");
+            await _customersCollection.DeleteOneAsync(u => u.Id == key);
         }
 
         public async Task<IQueryable<Customer>> SearchForPeople<TOrderByKey>(Expression<Func<Customer, bool>> predicate,

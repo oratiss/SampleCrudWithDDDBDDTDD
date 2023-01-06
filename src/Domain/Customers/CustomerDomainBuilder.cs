@@ -12,7 +12,7 @@ namespace Domain.Customers
         public DateTimeOffset DateOfBirth = CustomerConstants.SomeDateOfBirth;
         public string PhoneNumber = CustomerConstants.SomePhoneNumber;
         public string Email = CustomerConstants.SomeEmail;
-        public BankAccount BankAccount = new BankAccount(CustomerConstants.SomeBankAccountNumber);
+        public BankAccountVo BankAccount = new BankAccountVo(CustomerConstants.SomeBankAccountNumber);
 
         public CustomerDomainBuilder()
         {

@@ -1,5 +1,7 @@
+using ApplicationService.BankAccounts;
 using Infrastructure.Persistence.MSSQL.Contexts;
 using Microsoft.EntityFrameworkCore;
+using NearToEndpointDtos.BankAccounts;
 
 namespace EventPublisherWorkerService
 {
@@ -7,11 +9,13 @@ namespace EventPublisherWorkerService
     {
         private readonly ILogger<EventPublisherWorker> _logger;
         private readonly SampleDbContext _dbContext;
+        private readonly IBankAccountApplicationService _bankAccountApplicationService;
 
-        public EventPublisherWorker(ILogger<EventPublisherWorker> logger, SampleDbContext dbContext)
+        public EventPublisherWorker(ILogger<EventPublisherWorker> logger, SampleDbContext dbContext, IBankAccountApplicationService bankAccountApplicationService)
         {
             _logger = logger;
             _dbContext = dbContext;
+            _bankAccountApplicationService = bankAccountApplicationService;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -22,27 +26,45 @@ namespace EventPublisherWorkerService
 
                 var unpublishedCustomerCreatedEvents =
                     await _dbContext.Customers
-                        .Select(x => new 
+                        .Select(x => new
                         {
                             CustomerFullName = $"{x.CustomerCreatedEvent!.Customer.FirstName} {x.CustomerCreatedEvent!.Customer.LastName}",
-                            DateOfBirth = x.DateOfBirth,
+                            x.DateOfBirth,
                             AccountNumber = x.CustomerCreatedEvent.BankAccountNumber,
                             x.CustomerCreatedEvent.CustomerId,
                             x.CustomerCreatedEvent.IsPublished,
                         })
-                        .Where(x=>x.IsPublished != null && !x.IsPublished.Value)
+                        .Where(x => x.IsPublished != null && !x.IsPublished.Value)
                         .ToListAsync(cancellationToken: stoppingToken);
 
                 if (unpublishedCustomerCreatedEvents.Any())
                 {
                     foreach (var unpublishedEvent in unpublishedCustomerCreatedEvents)
                     {
-                        //Todo: make AddBankAccount with UserId and user value objects from unpublishedEvent and pass it to BankApplicationService
-                        //Todo: on success result, update event and resource it in db
+                        AddBankAccountDto addBankAccountDto = new()
+                        {
+                            BankAccountNumber = unpublishedEvent.AccountNumber,
+                            DateOdBirth = unpublishedEvent.DateOfBirth,
+                            CreateDateTime = DateTimeOffset.Now,
+                            CustomerFullName = unpublishedEvent.CustomerFullName,
+                            CustomerId = unpublishedEvent.CustomerId
+                        };
+                        await _bankAccountApplicationService.AddBankAccountAsync(addBankAccountDto);
+
                     }
                 }
 
-                await Task.Delay(15000, stoppingToken);
+                foreach (var unpublishedEvent in unpublishedCustomerCreatedEvents)
+                {
+                    var customerCreatedEvent = _dbContext.Customers.FirstOrDefault(x =>
+                        x.CustomerCreatedEvent!.CustomerId == unpublishedEvent.CustomerId);
+                    customerCreatedEvent!.CustomerCreatedEvent!.IsPublished = true;
+                    _dbContext.Update(customerCreatedEvent);
+                }
+
+                await _dbContext.SaveChangesAsync(cancellationToken: stoppingToken);
+
+                Thread.Sleep(300000); //Wait 5 minutes
             }
         }
     }

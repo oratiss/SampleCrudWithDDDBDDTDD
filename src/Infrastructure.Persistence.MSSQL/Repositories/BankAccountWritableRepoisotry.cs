@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.MSSQL.Repositories
 {
-    public class BankAccountWritableRepository: IBankAccountWritableRepository
+    public class BankAccountWritableRepository : IBankAccountWritableRepository
     {
         private readonly SampleDbContext _dbContext;
 
@@ -38,11 +38,14 @@ namespace Infrastructure.Persistence.MSSQL.Repositories
             {
                 if (_dbContext.Customers.Any())
                 {
-                    var existingBankAccounts = _dbContext.BankAccounts.Where(x =>
-                        $"{x.CustomerVoForBankAccount.FullName}-{x.CustomerVoForBankAccount.DateOfBirth}" == $"{bankAccount.CustomerVoForBankAccount.FullName.Trim().ToLower()}-{bankAccount.CustomerVoForBankAccount.DateOfBirth}");
-                    if (existingBankAccounts.Any())
+                    if (_dbContext.BankAccounts.Any())
                     {
-                        throw new Exception("One or more BankAccounts with exact entered full name and birthdate already exist.");
+                        var existingBankAccounts = _dbContext.BankAccounts.Where(x =>
+                            $"{x.CustomerVoForBankAccount.FullName}-{x.CustomerVoForBankAccount.DateOfBirth}" == $"{bankAccount.CustomerVoForBankAccount.FullName.Trim().ToLower()}-{bankAccount.CustomerVoForBankAccount.DateOfBirth}").ToList();
+                        if (existingBankAccounts.Any())
+                        {
+                            throw new Exception("One or more BankAccounts with exact entered full name and birthdate already exist.");
+                        }
                     }
                 }
             }
@@ -71,7 +74,7 @@ namespace Infrastructure.Persistence.MSSQL.Repositories
             {
                 throw new Exception("A BankAccount with exact entered full name and birthdate already exists.");
             }
-            
+
             bankAccount.CustomerVoForBankAccount.FullName = bankAccount.CustomerVoForBankAccount.FullName.Trim().ToLower();
             var updateBankAccount = _dbContext.Update(bankAccount);
             return updateBankAccount.Entity;

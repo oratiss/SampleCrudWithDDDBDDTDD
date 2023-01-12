@@ -1,4 +1,6 @@
+using ApplicationService.BankAccounts;
 using ApplicationService.Customers;
+using Domain.BankAccounts;
 using Domain.Customers;
 using Infrastructure.Persistence.Mongo.Configurations;
 using Infrastructure.Persistence.Mongo.Repositories;
@@ -23,13 +25,16 @@ builder.Services.AddDbContext<SampleDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddScoped<ICustomerWritableRepository, CustomerWritableRepository>();
 
 builder.Services.Configure<MongoDbConfiguration>(builder.Configuration.GetSection("MongoDB"));
-builder.Services.AddSingleton<ICustomerReadableRepository, CustomerReadableRepository>();
 
+builder.Services.AddScoped<ICustomerWritableRepository, CustomerWritableRepository>();
+builder.Services.AddScoped<ICustomerReadableRepository, CustomerReadableRepository>();
 builder.Services.AddScoped<ICustomerApplicationService, CustomerApplicationService>();
 
+builder.Services.AddScoped<IBankAccountWritableRepository, BankAccountWritableRepository>();
+builder.Services.AddScoped<IBankAccountReadableRepository, BankAccountReadableRepository>();
+builder.Services.AddScoped<IBankAccountApplicationService, BankAccountApplicationService>();
 
 var app = builder.Build();
 

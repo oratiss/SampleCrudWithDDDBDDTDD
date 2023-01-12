@@ -1,5 +1,6 @@
 ﻿using Domain.BankAccounts;
 using Infrastructure.Persistence.Mongo.RepositoryAbstractions;
+using Infrastructure.Persistence.MSSQL.Models;
 using WritableBankAccount = Infrastructure.Persistence.MSSQL.Models.BankAccount;
 using ReadableBankAccount = Infrastructure.Persistence.Mongo.Models.BankAccount;
 using Infrastructure.Persistence.MSSQL.RepositoryAbstractions;
@@ -40,10 +41,16 @@ namespace ApplicationService.BankAccounts
                     .Build();
 
                 var persistingWritableBankAccount = bankAccountDomain.Adapt<WritableBankAccount>();
-                var addedBankAccountToWritableRepo =
-                    await _bankAccountWritableRepository.Add(persistingWritableBankAccount);
+                persistingWritableBankAccount.CustomerVoForBankAccount = new CustomerVoForBankAccount()
+                {
+                    FullName = bankAccountDomain.CustomerVo.CustomerFullName,
+                    DateOfBirth = bankAccountDomain.CustomerVo.DateOfBirth
+                };
+                var writtenBankAccount = await _bankAccountWritableRepository.Add(persistingWritableBankAccount);
 
                 var persistingReadableBankAccount = bankAccountDomain.Adapt<ReadableBankAccount>();
+                persistingReadableBankAccount.FullName = bankAccountDomain.CustomerVo.CustomerFullName;
+                persistingReadableBankAccount.Id = writtenBankAccount.Id;
                 await _bankAccountReadableRepository.Add(persistingReadableBankAccount);
 
                 var outputBankAccountDto = persistingReadableBankAccount.Adapt<BankAccountDto>();

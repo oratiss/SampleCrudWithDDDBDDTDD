@@ -36,14 +36,6 @@ namespace AcceptanceTestsWithBDD.Abstractions
                     // here we can "compile" the settings. Api.Setup will do the same, it doesn't matter.
                     _configuration = conf.Build();
                 });
-
-                builder.ConfigureTestServices(services =>
-                {
-                    services.AddDbContext<SampleDbContext>(options =>
-                    {
-                        options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
-                    });
-                });
             });
 
             client = applicationFactory.CreateClient();

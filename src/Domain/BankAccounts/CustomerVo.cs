@@ -15,7 +15,7 @@ namespace Domain.BankAccounts
                 throw new Exception("Customer should be at least 12 years old.") { HResult = 30 };
             }
 
-            if (string.IsNullOrWhiteSpace(CustomerFullName))
+            if (string.IsNullOrWhiteSpace(customerFullName))
             {
                 throw new Exception("Customer's full name is null,empty or white space.") { HResult = 10 };
             }

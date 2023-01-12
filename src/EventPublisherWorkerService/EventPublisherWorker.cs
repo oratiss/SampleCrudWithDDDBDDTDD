@@ -52,17 +52,17 @@ namespace EventPublisherWorkerService
                         await _bankAccountApplicationService.AddBankAccountAsync(addBankAccountDto);
 
                     }
-                }
 
-                foreach (var unpublishedEvent in unpublishedCustomerCreatedEvents)
-                {
-                    var customerCreatedEvent = _dbContext.Customers.FirstOrDefault(x =>
-                        x.CustomerCreatedEvent!.CustomerId == unpublishedEvent.CustomerId);
-                    customerCreatedEvent!.CustomerCreatedEvent!.IsPublished = true;
-                    _dbContext.Update(customerCreatedEvent);
-                }
+                    foreach (var unpublishedEvent in unpublishedCustomerCreatedEvents)
+                    {
+                        var customerCreatedEvent = _dbContext.Customers.FirstOrDefault(x =>
+                            x.CustomerCreatedEvent!.CustomerId == unpublishedEvent.CustomerId);
+                        customerCreatedEvent!.CustomerCreatedEvent!.IsPublished = true;
+                        _dbContext.Update(customerCreatedEvent);
+                    }
 
-                await _dbContext.SaveChangesAsync(cancellationToken: stoppingToken);
+                    await _dbContext.SaveChangesAsync(cancellationToken: stoppingToken);
+                }
 
                 Thread.Sleep(300000); //Wait 5 minutes
             }
